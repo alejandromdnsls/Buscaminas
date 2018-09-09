@@ -5,6 +5,8 @@
  */
 package servidorbuscaminas;
 
+import usuario.Usuario;
+
 import java.io.DataInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
@@ -36,8 +38,8 @@ public class ServidorBuscaminas {
                 switch(nivel){
                     case 1:                       
                         matriz = new int[9][9];
-                        for(int i = 0; i < 9; i++){
-                            for(int j = 0; j < 9; i++){
+                        for(int i = 0; i < matriz.length; i++){
+                            for(int j = 0; j < matriz[0].length; i++){
                                 matriz[i][j] = 0;
                             }
                         }
@@ -51,6 +53,17 @@ public class ServidorBuscaminas {
                         matriz = new int[16][30];
                         break;
                 }
+                
+                //Leer los resultados
+                int puntuacion = dis.readInt();
+                //Se preparan los datos para almacenar resultados en un archivo
+                //se crea un flujo para la salida al archivo
+                int partidas = 1;
+                Usuario u = new Usuario(usuario, puntuacion, partidas);
+                //Almacenar información en un archivo
+                
+                //Enviar mejores puntuaciones
+                
                 oos.close();
                 dis.close();
                 cl.close();
