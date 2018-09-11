@@ -17,29 +17,30 @@ import java.net.Socket;
  * @author alejandroms
  */
 public class ServidorBuscaminas {
-    public static void main(String[]args){
-        try{
+
+    public static void main(String[] args) {
+        try {
             ServerSocket s = new ServerSocket(1234);
             System.out.println("Esperando cliente...");
             //El servidor espera la solicitud de conexión de un cliente
-            for(;;){
+            for (;;) {
                 Socket cl = s.accept();
-                System.out.println("Conexión establecida desde: " + 
-                        cl.getInetAddress() + ":" + cl.getPort());
+                System.out.println("Conexión establecida desde: "
+                        + cl.getInetAddress() + ":" + cl.getPort());
                 //Se define un flujo de entrada ligado al socket
                 DataInputStream dis = new DataInputStream(cl.getInputStream());
                 //se reciben los datos para generar el juego
+                String usuario = dis.readUTF();
                 int nivel = dis.readInt();
-                String usuario = dis.readUTF();                
                 System.out.println("Usuario: " + usuario);
                 //Se define un flujo de salida para enviar una matriz de acuerdo al nivel
                 ObjectOutputStream oos = new ObjectOutputStream(cl.getOutputStream());
                 int matriz[][];
-                switch(nivel){
-                    case 1:                       
+                switch (nivel) {
+                    case 1:
                         matriz = new int[9][9];
-                        for(int i = 0; i < matriz.length; i++){
-                            for(int j = 0; j < matriz[0].length; i++){
+                        for (int i = 0; i < matriz.length; i++) {
+                            for (int j = 0; j < matriz[0].length; j++) {
                                 matriz[i][j] = 0;
                             }
                         }
@@ -53,7 +54,7 @@ public class ServidorBuscaminas {
                         matriz = new int[16][30];
                         break;
                 }
-                
+
                 //Leer los resultados
                 int puntuacion = dis.readInt();
                 //Se preparan los datos para almacenar resultados en un archivo
@@ -61,16 +62,15 @@ public class ServidorBuscaminas {
                 int partidas = 1;
                 Usuario u = new Usuario(usuario, puntuacion, partidas);
                 //Almacenar información en un archivo
-                
+
                 //Enviar mejores puntuaciones
-                
                 oos.close();
                 dis.close();
                 cl.close();
-            }            
-        }catch(Exception e){
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
     }
 }
