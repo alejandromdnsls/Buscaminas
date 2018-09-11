@@ -51,10 +51,19 @@ public class ClienteBuscaminas {
             //leer matriz en un arreglo de tamaño total = nxm segun el tipo de nivel
             b = (int[][]) ois.readObject();
             
-            
-            //se envia puntuacion
+
+            //minas para prueba
             JuegoBuscaminas juego = new JuegoBuscaminas();
-            int puntuacion = juego.iniciarJuego(nivel, b);;
+            b[0][4] = 1;
+            b[2][4] = 1;
+            b[3][4] = 1;
+            b[7][0] = 1;
+            b[4][7] = 1;
+            b[0][8] = 1;
+            
+                        
+            //se envia puntuacion
+            int puntuacion = juego.iniciarJuego(nivel, b);
             dos.writeInt(puntuacion);
             dos.flush();
 
