@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,7 +42,7 @@ public class ClienteBuscaminas {
 
             Socket cl = new Socket(host, pto);
             DataOutputStream dos = new DataOutputStream(cl.getOutputStream());
-            
+
             //envia nombre, nivel
             dos.writeUTF(nombre);
             dos.flush();
@@ -50,7 +52,6 @@ public class ClienteBuscaminas {
             ObjectInputStream ois = new ObjectInputStream(cl.getInputStream());
             //leer matriz en un arreglo de tamaño total = nxm segun el tipo de nivel
             b = (int[][]) ois.readObject();
-            
 
             //minas para prueba
             JuegoBuscaminas juego = new JuegoBuscaminas();
@@ -60,13 +61,18 @@ public class ClienteBuscaminas {
             b[7][0] = 1;
             b[4][7] = 1;
             b[0][8] = 1;
-            
-                        
+
             //se envia puntuacion
             int puntuacion = juego.iniciarJuego(nivel, b);
+            System.out.println("pnt" + puntuacion);
             dos.writeInt(puntuacion);
             dos.flush();
 
+//            Map<String,Integer> listaPuntuaciones = (Map<String,Integer>) ois.readObject();
+//            System.out.println("##" + listaPuntuaciones.size());
+//            for(String clave: listaPuntuaciones.keySet()){
+//                System.out.println(clave + listaPuntuaciones.get(clave));
+//            }
             bfSistema.close();
             dos.close();
             ois.close();

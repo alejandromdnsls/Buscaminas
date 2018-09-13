@@ -20,12 +20,13 @@ public final class JuegoBuscaminas {
     private int[][] juego;
     private int ancho;
     private int largo;
+    private boolean isBandera = false;
+    int puntuacion = 0;
 
     public JuegoBuscaminas() {
     }
 
     public int iniciarJuego(int nivel, int[][] juego) {
-        int puntuacion = 0;
         boolean canJugar = true;
         this.juego = juego;
         largo = juego.length;
@@ -48,9 +49,15 @@ public final class JuegoBuscaminas {
         while (canSeguirJugando) {
             int minasVecinas = 0;
             if (juego[y][x] == 1) {
-                canSeguirJugando = false;
-                System.out.println("FIN DEL JUEGO!!!!");
-                break;
+                if (isBandera) {
+                    puntuacion++;
+                    actualizarEscenario(minasVecinas, escenario);
+                } else {
+                    canSeguirJugando = false;
+                    System.out.println("FIN DEL JUEGO!!!!");
+                    break;
+                }
+
             } else {
                 if (y == 0) {
                     if (x == 0) {//esq. sup. izq
@@ -71,11 +78,11 @@ public final class JuegoBuscaminas {
                     }
                 } else {
                     if (x == 0) {
-                        minasVecinas = juego[y-1][0] + juego[y + 1][0] + juego[y-1][1] + juego[y][1] + juego[y+1][1];
-                    }else if(x == (ancho - 1)){
-                        minasVecinas = juego[y-1][ancho - 1] + juego[y + 1][ancho - 1] + juego[y-1][ancho - 2] + juego[y][ancho - 2] + juego[y+1][ancho - 2];
-                    }else{
-                        minasVecinas = juego[y-1][x-1] + juego[y][x-1] + juego[y+1][x-1] + juego[y-1][x] + juego[y+1][x] + juego[y-1][x+1] + juego[y][x+1] + juego[y+1][x+1];
+                        minasVecinas = juego[y - 1][0] + juego[y + 1][0] + juego[y - 1][1] + juego[y][1] + juego[y + 1][1];
+                    } else if (x == (ancho - 1)) {
+                        minasVecinas = juego[y - 1][ancho - 1] + juego[y + 1][ancho - 1] + juego[y - 1][ancho - 2] + juego[y][ancho - 2] + juego[y + 1][ancho - 2];
+                    } else {
+                        minasVecinas = juego[y - 1][x - 1] + juego[y][x - 1] + juego[y + 1][x - 1] + juego[y - 1][x] + juego[y + 1][x] + juego[y - 1][x + 1] + juego[y][x + 1] + juego[y + 1][x + 1];
                     }
 
                 }
@@ -87,7 +94,12 @@ public final class JuegoBuscaminas {
     }
 
     private void actualizarEscenario(int minasVecinas, String escenario[][]) {
-        escenario[y][x] = " " + Integer.toString(minasVecinas) + " ";
+        if (isBandera) {
+            escenario[y][x] = " " + "M" + " ";
+        } else {
+            escenario[y][x] = " " + Integer.toString(minasVecinas) + " ";
+        }
+
         imprimirEscenario(escenario);
         leerCoordenada();
     }
@@ -97,8 +109,9 @@ public final class JuegoBuscaminas {
         try {
             System.out.println("introduzca coordenada de tiro de la forma: y,x ");
             String coordenada = bfSistema.readLine();
-            x = Integer.parseInt(coordenada.split(",")[1]);
             y = Integer.parseInt(coordenada.split(",")[0]);
+            x = Integer.parseInt(coordenada.split(",")[1]);
+            isBandera = coordenada.split(",").length == 3;
         } catch (IOException ex) {
             ex.printStackTrace();
         }
