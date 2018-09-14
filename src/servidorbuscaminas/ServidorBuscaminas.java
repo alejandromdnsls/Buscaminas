@@ -11,6 +11,7 @@ import java.io.DataInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Random;
 
 /**
  *
@@ -36,6 +37,7 @@ public class ServidorBuscaminas {
                 //Se define un flujo de salida para enviar una matriz de acuerdo al nivel
                 ObjectOutputStream oos = new ObjectOutputStream(cl.getOutputStream());
                 int matriz[][];
+                Random rand = new Random(System.currentTimeMillis());
                 switch (nivel) {
                     case 1:
                         matriz = new int[9][9];
@@ -44,14 +46,55 @@ public class ServidorBuscaminas {
                                 matriz[i][j] = 0;
                             }
                         }
+                        for (int i = 0; i <= 10; i++) {
+                            int y = rand.nextInt(matriz.length);
+                            int x = rand.nextInt(matriz[0].length);
+                            System.out.println(">>" + y + " " + x);
+                            matriz[y][x] = 1;
+                            rand.setSeed(System.currentTimeMillis());
+                            Thread.sleep(5L);
+                        }
                         oos.writeObject(matriz);
                         oos.flush();
                         break;
                     case 2:
                         matriz = new int[16][16];
+                        for (int i = 0; i < matriz.length; i++) {
+                            for (int j = 0; j < matriz[0].length; j++) {
+                                matriz[i][j] = 0;
+                            }
+                        }
+                        
+                        for (int i = 0; i <= 40; i++) {
+                            rand.nextInt();
+                            int y = rand.nextInt(matriz.length);
+                            int x = rand.nextInt(matriz[0].length);
+                            System.out.println(">>" + y + " " + x);
+                            matriz[y][x] = 1;
+                            Thread.sleep(17L);
+                            rand.setSeed(System.currentTimeMillis());
+                        }
+                        oos.writeObject(matriz);
+                        oos.flush();
                         break;
                     case 3:
                         matriz = new int[16][30];
+                        for (int i = 0; i < matriz.length; i++) {
+                            for (int j = 0; j < matriz[0].length; j++) {
+                                matriz[i][j] = 0;
+                            }
+                        }
+                        for (int i = 0; i <= 99; i++) {
+                            rand.nextInt();
+                            int y = rand.nextInt(matriz.length);
+                            int x = rand.nextInt(matriz[0].length);
+                            System.out.println(">>" + y + " " + x);
+                            matriz[y][x] = 1;
+                            Thread.sleep(22L);
+                            rand.setSeed(System.currentTimeMillis());
+                        }
+                        oos.writeObject(matriz);
+                        oos.flush();
                         break;
                 }
 
@@ -73,4 +116,9 @@ public class ServidorBuscaminas {
         }
 
     }
+
+    public void aleatorio() {
+
+    }
+
 }
