@@ -26,7 +26,6 @@ import java.util.Random;
  * @author alejandroms
  */
 public class ServidorBuscaminas {
-
     public static void main(String[] args) {
         try {
             ServerSocket s = new ServerSocket(1234);
@@ -111,26 +110,29 @@ public class ServidorBuscaminas {
                 System.out.println("Puntos: " + puntuacion);
                 
                 //Comprueba si exite el Usuario en el archivo                               
-                
-                if(searchUsuario(usuario) == null){
-                    Usuario u = new Usuario(usuario, puntuacion, 1);
-                    ArrayList <Usuario> usuarios = getUsuarios();
-                    ObjectOutputStream oosf = new ObjectOutputStream(new FileOutputStream("Resultados.dat"));                    
-                    for(int i = 0; i < usuarios.size(); i++){
-                        oosf.writeObject(usuarios.get(i));
+                File file = new File("Resultados.dat");
+                if(file.exists()){
+                    if(searchUsuario(usuario) == null){
+                        Usuario u = new Usuario(usuario, puntuacion, 1);
+                        ArrayList <Usuario> usuarios = getUsuarios();
+                        ObjectOutputStream oosf = new ObjectOutputStream(new FileOutputStream("Resultados.dat"));                    
+                        for(int i = 0; i < usuarios.size(); i++){
+                            oosf.writeObject(usuarios.get(i));
+                        }
+                        oosf.writeObject(u);
+                        oosf.close();                        
                     }
-                    oosf.writeObject(u);
-                    oosf.close();
-                    ArrayList <Usuario> otro= getUsuarios();
-                    for(int i = 0; i < otro.size(); i++){
-                        System.out.println(otro.get(i).getNombre());
-                    }
-                    
+                    else{
+                        actualizarUsuario(usuario, puntuacion);
+                    }                    
                 }
                 else{
-                    actualizarUsuario(usuario, puntuacion);
+                    Usuario u = new Usuario(usuario, puntuacion, 1);                
+                    ObjectOutputStream oosf = new ObjectOutputStream(new FileOutputStream("Resultados.dat"));                                        
+                    oosf.writeObject(u);
+                    oosf.close();                                 
                 }
-   
+
                 oos.writeObject(getUsuarios());
                 
                 oos.close();
@@ -187,7 +189,8 @@ public class ServidorBuscaminas {
                     usuarios.get(i).setPuntuacion(p);
                 oos.writeObject(usuarios.get(i));
             }
-            oos.writeObject(usuarios.get(i));
+            else
+                 oos.writeObject(usuarios.get(i));
         }              
         oos.close();
     }
