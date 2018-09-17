@@ -8,9 +8,17 @@ package servidorbuscaminas;
 import usuario.Usuario;
 
 import java.io.DataInputStream;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -97,16 +105,34 @@ public class ServidorBuscaminas {
                         oos.flush();
                         break;
                 }
-
-                //Leer los resultados
+                                
+                //Leer puntuación
                 int puntuacion = dis.readInt();
-                //Se preparan los datos para almacenar resultados en un archivo
-                //se crea un flujo para la salida al archivo
-                int partidas = 1;
-                Usuario u = new Usuario(usuario, puntuacion, partidas);
-                //Almacenar información en un archivo
-
-                //Enviar mejores puntuaciones
+                System.out.println("Puntos: " + puntuacion);
+                
+                //Comprueba si exite el Usuario en el archivo                               
+                
+                if(searchUsuario(usuario) == null){
+                    Usuario u = new Usuario(usuario, puntuacion, 1);
+                    ArrayList <Usuario> usuarios = getUsuarios();
+                    ObjectOutputStream oosf = new ObjectOutputStream(new FileOutputStream("Resultados.dat"));                    
+                    for(int i = 0; i < usuarios.size(); i++){
+                        oosf.writeObject(usuarios.get(i));
+                    }
+                    oosf.writeObject(u);
+                    oosf.close();
+                    ArrayList <Usuario> otro= getUsuarios();
+                    for(int i = 0; i < otro.size(); i++){
+                        System.out.println(otro.get(i).getNombre());
+                    }
+                    
+                }
+                else{
+                    actualizarUsuario(usuario, puntuacion);
+                }
+   
+                oos.writeObject(getUsuarios());
+                
                 oos.close();
                 dis.close();
                 cl.close();
@@ -116,9 +142,59 @@ public class ServidorBuscaminas {
         }
 
     }
-
-    public void aleatorio() {
-
+    
+    public static Usuario searchUsuario(String u) throws IOException, ClassNotFoundException{
+        ObjectInputStream ois = null;
+        try{
+            ois = new ObjectInputStream(new FileInputStream("Resultados.dat"));             
+            while(true){
+                Usuario usuario = (Usuario)ois.readObject();                
+                if(usuario.getNombre().equals(u))
+                    return usuario;                
+            }
+        }catch(EOFException e){
+            return null;
+        }finally{
+            ois.close();
+        }
     }
-
+    
+    public static ArrayList<Usuario> getUsuarios() throws IOException, ClassNotFoundException{
+        ObjectInputStream ois = null;
+        ArrayList <Usuario> usuarios = new ArrayList<>(); 
+        try{
+            ois = new ObjectInputStream(new FileInputStream("Resultados.dat"));
+            while(true){
+                Usuario usuario = (Usuario)ois.readObject();
+                usuarios.add(usuario);
+                //System.out.println(usuario.getNombre());
+            }
+        }catch(EOFException e){
+            return usuarios;
+        }finally{
+            ois.close();
+        }
+    }    
+    
+    public static void actualizarUsuario(String u, int p) throws IOException, ClassNotFoundException{
+        ArrayList<Usuario> usuarios = getUsuarios();      
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Resultados.dat"));
+        for(int i = 0; i < usuarios.size(); i++){
+            if(usuarios.get(i).getNombre().equals(u)){
+                int partidas = usuarios.get(i).getPartidas() + 1;
+                usuarios.get(i).setPartidas(partidas);
+                if(usuarios.get(i).getPuntuacion() < p)
+                    usuarios.get(i).setPuntuacion(p);
+                oos.writeObject(usuarios.get(i));
+            }
+            oos.writeObject(usuarios.get(i));
+        }              
+        oos.close();
+    }
+    
+    /*public static ArrayList<Usuario> getTop() throws IOException, ClassNotFoundException{
+        ArrayList<Usuario> top_usuarios = getUsuarios();
+        Collections.sort(top_usuarios);
+        return top_usuarios;        
+    } */
 }

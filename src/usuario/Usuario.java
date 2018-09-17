@@ -11,7 +11,7 @@ import java.io.Serializable;
  *
  * @author alejandroms
  */
-public class Usuario implements Serializable {
+public class Usuario implements Serializable{
     String nombre;
     int puntuacion;
     int partidas;
@@ -45,4 +45,38 @@ public class Usuario implements Serializable {
     public void setPartidas(int partidas) {
         this.partidas = partidas;
     }           
+    
+    /*
+    @Override
+    public int compareTo(Usuario o) {
+        if (puntuacion < o.puntuacion) {
+            return puntuacion;
+        }
+        if (puntuacion > o.puntuacion) {
+            return puntuacion;
+        }
+        return 0;
+    }*/
+
+    /*
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Usuario other = (Usuario) obj;
+        if (this.puntuacion != other.puntuacion) {
+            return false;
+        }
+        return true;
+    }*/
+
+    
+       
 }
